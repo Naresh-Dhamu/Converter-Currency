@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { InputBox } from "./components";
-import useCurrencyinfo from "./hooks/useCurrencyinfo";
+import useCurrencyInfo from "./hooks/useCurrencyinfo";
 
 function App() {
   const [amount, setAmount] = useState(0);
@@ -8,37 +8,51 @@ function App() {
   const [to, setTo] = useState("inr");
   const [convertedAmount, setConvertedAmount] = useState(0);
 
-  const currencyInfo = useCurrencyinfo(from);
+  const currencyInfo = useCurrencyInfo(from);
   const options = Object.keys(currencyInfo);
+
+  useEffect(() => {
+    setConvertedAmount(amount * (currencyInfo[to] || 0));
+  }, [amount, from, to, currencyInfo]);
 
   const swap = () => {
     setFrom(to);
     setTo(from);
-    setConvertedAmount(amount * currencyInfo[to]);
+    setAmount(convertedAmount);
+    setConvertedAmount(amount);
   };
 
   const convert = () => {
-    setConvertedAmount(amount * currencyInfo[to]);
+    setConvertedAmount(amount * (currencyInfo[to] || 0));
   };
 
   return (
-    <div
-      className="w-full h-screen flex flex-wrap justify-center items-center bg-cover bg-no-repeat px-2"
-      style={{
-        backgroundImage: `url('https://images.pexels.com/photos/169677/pexels-photo-169677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')`,
-      }}
-    >
-     <div>
-        <img
-        className="w-20 h-20 sm:w-40 sm:h-40 rounded-full mx-auto "
-          src="https://avatars.githubusercontent.com/u/89912059?v=4"
-          alt="Naresh Dhamu"
-        />
-        <div className="text-center text-xl sm:text-2xl my-2">Naresh Dhamu</div>
-        <div className="text-center text-xl sm:text-2xl">By creacted!</div>
-      </div>
-      <div className="w-full">
-        <div className=" w-full max-w-md mx-auto border border-gray-50 rounded-lg p-5 backdrop-blur-sm bg-white/30">
+    <div className="relative w-full h-screen flex flex-wrap justify-center items-center px-2">
+      <div
+        className="absolute inset-0 bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: `url('https://images.pexels.com/photos/169677/pexels-photo-169677.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          zIndex: -1,
+        }}
+      />
+      <div className="absolute inset-0 bg-black opacity-40 z-0"></div>
+      <div className="relative w-full z-10">
+        <div className="mb-5">
+          <img
+            className="w-20 h-20 sm:w-40 sm:h-40 rounded-full mx-auto"
+            src="https://avatars.githubusercontent.com/u/89912059?v=4"
+            alt="Naresh Dhamu"
+          />
+          <div className="text-center">
+            <div className="font-semibold text-xl sm:text-2xl my-2">Naresh Dhamu</div>
+            <div className="font-semibold text-xl sm:text-2xl">By created!</div>
+          </div>
+        </div>
+
+        <div className="w-full max-w-md mx-auto border border-gray-50 rounded-lg p-5 backdrop-blur-sm bg-white/30">
+          <h1 className="text-3xl sm:text-4xl font-bold text-center mb-5">Currency Converter</h1>
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -51,7 +65,7 @@ function App() {
                 amount={amount}
                 currencyOptions={options}
                 onCurrencyChange={(currency) => setFrom(currency)}
-                onAmountChange={(amount) => setAmount(amount)}
+                onAmountChange={(amount) => setAmount(Number(amount))}
                 selectedCurrency={from}
               />
             </div>
@@ -71,7 +85,7 @@ function App() {
                 currencyOptions={options}
                 onCurrencyChange={(currency) => setTo(currency)}
                 selectedCurrency={to}
-                amountDisabled
+                disabled
               />
             </div>
             <button
