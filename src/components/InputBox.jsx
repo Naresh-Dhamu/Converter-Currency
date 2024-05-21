@@ -1,4 +1,4 @@
-import { useId } from "react";
+import { useId, useState } from "react";
 
 function InputBox({
   label,
@@ -12,6 +12,17 @@ function InputBox({
   className = "",
 }) {
   const amountInputId = useId();
+  const [error, setError] = useState("");
+  const handleAmountChange = (e) => {
+    const value = e.target.value;
+    // Check if the input value is numeric
+    if (/^\d*\.?\d*$/.test(value)) {
+      onAmountChange && onAmountChange(value);
+      setError(""); // Clear error message if input is valid
+    } else {
+      setError("Please enter a valid number");
+    }
+  };
   return (
     <div className={`bg-white p-3 rounded-lg text-sm flex  ${className}`}>
       <div className="w-1/2">
@@ -25,8 +36,9 @@ function InputBox({
           placeholder="Amount"
           disabled={amountDisabled}
           value={amount}
-          onChange={(e) => onAmountChange && onAmountChange(Number(e.target.value))}
+          onChange={handleAmountChange}
         />
+        {error && <p className="text-red-500 text-xs mt-1">{error}</p>} {/* Display error message */}
       </div>
       <div className="w-1/2 flex flex-wrap justify-end text-right">
         <p className="text-black/40 mb-2 w-full">Currency Type</p>
