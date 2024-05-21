@@ -41,7 +41,7 @@ function App() {
       <div className="relative w-full z-10">
         <div className="mb-5">
           <img
-            className="w-20 h-20 sm:w-40 sm:h-40 rounded-full mx-auto"
+            className="w-32 h-32 sm:w-40 sm:h-40 rounded-full mx-auto"
             src="https://avatars.githubusercontent.com/u/89912059?v=4"
             alt="Naresh Dhamu"
           />
